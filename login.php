@@ -32,10 +32,14 @@ function login($conn, $user, $pass)
     global $admin;
     $pass = hash("sha256", $pass); //simpele hash functie zonder salt
     try {
-        $res = $conn->prepare("SELECT * FROM user WHERE username = ':username' AND pass = ':pass';");
-        $res->bindParam(':username', $user);
-        $res->bindParam(':pass', $pass);
-        $row = $res->fetch();
+        $stmt = $conn->prepare("SELECT * FROM user WHERE username =:username AND pass =:pass ;");
+
+        $stmt->bindParam(':username', $user);
+        $stmt->bindParam(':pass', $pass);
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
         if ($row) {
             $_SESSION['user'] = $row[1];
             $res              = null;
